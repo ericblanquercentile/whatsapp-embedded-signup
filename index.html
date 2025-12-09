@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Business Configuration</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .container {
+      background: rgba(255,255,255,0.95);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 500px;
+      color: #333;
+    }
+    h1 { margin: 0 0 10px 0; font-size: 24px; color: #25D366; }
+    p { color: #666; margin: 0 0 30px 0; }
+    .btn {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #128C7E; transform: translateY(-2px); }
+    .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+    .status { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
+    .status.info { background: #e3f2fd; color: #1565c0; display: block; }
+    .status.success { background: #e8f5e9; color: #2e7d32; display: block; }
+    .status.error { background: #ffebee; color: #c62828; display: block; }
+    .spinner {
+      display: inline-block; width: 20px; height: 20px;
+      border: 3px solid #fff; border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-right: 10px; vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WhatsApp Business</h1>
+    <p>Connect your WhatsApp Business Account</p>
+    <button id="loginBtn" class="btn" onclick="launchEmbeddedSignup()">Continue with Facebook</button>
+    <div id="status" class="status"></div>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const CONFIG = {
+      appId: params.get('appId') || '',
+      configId: params.get('configId') || '',
+      sdkVersion: params.get('sdkVersion') || 'v22.0',
+      callbackEndpoint: params.get('callback') || '',
+      state: params.get('state') || crypto.randomUUID()
+    };
+    let fbReady = false;
+    let sessionData = null;
+    window.fbAsyncInit = function() {
+      FB.init({ appId: CONFIG.appId, cookie: true, xfbml: true, version: CONFIG.sdkVersion });
+      fbReady = true;
+      console.log('Facebook SDK initialized');
+    };
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    window.addEventListener('message', function(event) {
+      if (event.origin !== 'https://www.facebook.com' && event.origin !== 'https://web.facebook.com') return;
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'WA_EMBEDDED_SIGNUP') {
+          if (data.event === 'FINISH') {
+            sessionData = data.data;
+            console.log('Embedded Signup completed:', sessionData);
+          } else if (data.event === 'CANCEL') {
+            showStatus('Configuration cancelled', 'error');
+          }
+        }
+      } catch (e) {}
+    });
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.className = 'status ' + type;
+      status.innerHTML = message;
+    }
+    function launchEmbeddedSignup() {
+      if (!fbReady) { showStatus('Facebook SDK is loading...', 'info'); return; }
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Connecting...';
+      showStatus('Please complete the signup in the Facebook popup', 'info');
+      FB.login(function(response) {
+        if (response.authResponse && response.authResponse.code) {
+          showStatus('<span class="spinner"></span>Finalizing...', 'info');
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = CONFIG.callbackEndpoint;
+          const fields = {
+            code: response.authResponse.code,
+            state: CONFIG.state,
+            phone_number_id: sessionData ? sessionData.phone_number_id : '',
+            waba_id: sessionData ? sessionData.waba_id : ''
+          };
+          for (const [key, value] of Object.entries(fields)) {
+            const input = document.createElement('input');
+            input.type = 'hidden'; input.name = key; input.value = value || '';
+            form.appendChild(input);
+          }
+          document.body.appendChild(form);
+          form.submit();
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = 'Continue with Facebook';
+          showStatus('Login cancelled or failed', 'error');
+        }
+      }, {
+        config_id: CONFIG.configId,
+        response_type: 'code',
+        override_default_response_type: true,
+        extras: { sessionInfoVersion: 2, feature: 'whatsapp_embedded_signup' }
+      });
+    }
+  </script>
+</body>
+</html>
