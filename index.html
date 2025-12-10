@@ -69,6 +69,7 @@
       configId: params.get('configId') || '',
       sdkVersion: params.get('sdkVersion') || 'v22.0',
       callbackEndpoint: params.get('callback') || '',
+      webhookUrl: params.get('webhook_url') || '',
       state: params.get('state') || crypto.randomUUID()
     };
     let fbReady = false;
@@ -120,7 +121,8 @@
             code: response.authResponse.code,
             state: CONFIG.state,
             phone_number_id: sessionData ? sessionData.phone_number_id : '',
-            waba_id: sessionData ? sessionData.waba_id : ''
+            waba_id: sessionData ? sessionData.waba_id : '',
+            webhook_url: CONFIG.webhookUrl
           };
           for (const [key, value] of Object.entries(fields)) {
             const input = document.createElement('input');
