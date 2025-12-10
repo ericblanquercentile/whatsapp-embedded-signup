@@ -138,7 +138,12 @@
         config_id: CONFIG.configId,
         response_type: 'code',
         override_default_response_type: true,
-        extras: { sessionInfoVersion: 2, feature: 'whatsapp_embedded_signup' }
+        extras: {
+          sessionInfoVersion: "3",
+          version: "v3",
+          featureType: "whatsapp_business_app_onboarding",
+          setup: {}
+        }
       });
     }
   </script>
