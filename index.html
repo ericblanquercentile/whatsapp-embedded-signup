@@ -57,8 +57,8 @@
       padding: 10px 20px;
       font-size: 14px;
     }
-    .btn:hover { background: #128C7E; transform: translateY(-2px); }
-    .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { background: #ccc !important; cursor: not-allowed; transform: none; }
     .status { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
     .status.info { background: #e3f2fd; color: #1565c0; display: block; }
     .status.success { background: #e8f5e9; color: #2e7d32; display: block; }
@@ -69,11 +69,11 @@
     .error-container ul { text-align: left; color: #666; margin: 0; padding-left: 20px; }
     .error-container li { margin: 5px 0; }
     .spinner {
-      display: inline-block; width: 20px; height: 20px;
-      border: 3px solid #fff; border-radius: 50%;
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid currentColor; border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s linear infinite;
-      margin-right: 10px; vertical-align: middle;
+      margin-right: 6px; vertical-align: middle;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
@@ -104,10 +104,36 @@
       mode: params.get('mode') || 'full',
       parentOrigin: params.get('origin') || '*',
       buttonLabel: params.get('button_label') || 'Continue with Facebook',
-      connectingLabel: params.get('connecting_label') || 'Connecting...'
+      connectingLabel: params.get('connecting_label') || 'Connecting...',
+      buttonBg: params.get('button_bg') || '',
+      buttonColor: params.get('button_color') || '',
+      buttonBgHover: params.get('button_bg_hover') || '',
+      buttonBorder: params.get('button_border') || '',
+      buttonRadius: params.get('button_radius') || '',
+      buttonPadding: params.get('button_padding') || '',
+      buttonFontSize: params.get('button_font_size') || '',
+      buttonFontWeight: params.get('button_font_weight') || ''
     };
     document.body.className = CONFIG.mode;
-    document.getElementById('loginBtn').textContent = CONFIG.buttonLabel;
+    const btn = document.getElementById('loginBtn');
+    btn.textContent = CONFIG.buttonLabel;
+    const defaultBg = '#25D366';
+    const defaultHover = '#128C7E';
+    if (CONFIG.buttonBg) btn.style.background = CONFIG.buttonBg;
+    if (CONFIG.buttonColor) btn.style.color = CONFIG.buttonColor;
+    if (CONFIG.buttonBorder) btn.style.border = CONFIG.buttonBorder;
+    if (CONFIG.buttonRadius) btn.style.borderRadius = CONFIG.buttonRadius;
+    if (CONFIG.buttonPadding) btn.style.padding = CONFIG.buttonPadding;
+    if (CONFIG.buttonFontSize) btn.style.fontSize = CONFIG.buttonFontSize;
+    if (CONFIG.buttonFontWeight) btn.style.fontWeight = CONFIG.buttonFontWeight;
+    const originalBg = CONFIG.buttonBg || defaultBg;
+    const hoverBg = CONFIG.buttonBgHover || defaultHover;
+    btn.addEventListener('mouseenter', function() {
+      if (!btn.disabled) btn.style.background = hoverBg;
+    });
+    btn.addEventListener('mouseleave', function() {
+      if (!btn.disabled) btn.style.background = originalBg;
+    });
     const requiredParams = [
       { key: 'appId', label: 'appId (Facebook App ID)' },
       { key: 'configId', label: 'configId (Embedded Signup Config ID)' },
@@ -159,7 +185,6 @@
       };
       window.launchEmbeddedSignup = function() {
         if (!fbReady) { showStatus('Facebook SDK is loading...', 'info'); return; }
-        const btn = document.getElementById('loginBtn');
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner"></span>' + CONFIG.connectingLabel;
         showStatus('Please complete the signup in the Facebook popup', 'info');
@@ -190,6 +215,7 @@
             form.submit();
           } else {
             btn.disabled = false;
+            btn.style.background = originalBg;
             btn.innerHTML = CONFIG.buttonLabel;
             showStatus('Login cancelled or failed', 'error');
           }
