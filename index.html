@@ -60,27 +60,13 @@
     .btn:hover:not(:disabled) { background: #128C7E; transform: translateY(-2px); }
     .btn:disabled { background: #ccc !important; cursor: not-allowed; transform: none; }
     body.embedded .btn.native {
-      background: none;
-      color: ButtonText;
-      border: 2px outset ButtonFace;
-      padding: 1px 4px;
-      margin: 0;
+      all: revert;
       font-family: Verdana, Arial, sans-serif;
       font-size: 11px;
-      font-weight: normal;
-      border-radius: 0;
-      line-height: normal;
-      vertical-align: middle;
-      text-align: center;
-      transition: none;
-    }
-    body.embedded .btn.native:hover:not(:disabled) {
-      background: none;
-      transform: none;
+      cursor: pointer;
     }
     body.embedded .btn.native:disabled {
       cursor: not-allowed;
-      opacity: 0.6;
     }
     .status { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
     .status.info { background: #e3f2fd; color: #1565c0; display: block; }
@@ -133,11 +119,11 @@
     document.body.className = CONFIG.mode;
     const btn = document.getElementById('loginBtn');
     btn.textContent = CONFIG.buttonLabel;
-    
+
     if (CONFIG.buttonStyle === 'native') {
       btn.className = 'btn native';
     }
-    
+
     const requiredParams = [
       { key: 'appId', label: 'appId (Facebook App ID)' },
       { key: 'configId', label: 'configId (Embedded Signup Config ID)' },
