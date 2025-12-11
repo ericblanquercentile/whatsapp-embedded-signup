@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="version" content="1.0.1">
   <title>WhatsApp Business Configuration</title>
   <style>
+    .debug-info { position: fixed; top: 0; left: 0; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 2px 5px; z-index: 9999; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -116,7 +118,14 @@
     </div>
   </div>
   <script>
+    const PAGE_VERSION = document.querySelector('meta[name="version"]').content;
     const params = new URLSearchParams(window.location.search);
+    if (params.get('debug') === 'true') {
+      const debugDiv = document.createElement('div');
+      debugDiv.className = 'debug-info';
+      debugDiv.textContent = 'v' + PAGE_VERSION + ' | ' + new Date().toISOString();
+      document.body.appendChild(debugDiv);
+    }
     const CONFIG = {
       appId: params.get('appId') || '',
       configId: params.get('configId') || '',
