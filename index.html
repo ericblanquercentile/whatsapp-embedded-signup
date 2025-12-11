@@ -20,6 +20,7 @@
     body.embedded {
       background: transparent;
       min-height: auto;
+      display: block;
     }
     .container {
       background: rgba(255,255,255,0.95);
@@ -35,6 +36,8 @@
       padding: 0;
       border-radius: 0;
       box-shadow: none;
+      max-width: none;
+      width: 100%;
     }
     h1 { margin: 0 0 10px 0; font-size: 24px; color: #25D366; }
     p { color: #666; margin: 0 0 30px 0; }
@@ -64,6 +67,7 @@
       font-family: Verdana, Arial, sans-serif;
       font-size: 11px;
       cursor: pointer;
+      width: 100%;
     }
     body.embedded .btn.native:disabled {
       cursor: not-allowed;
