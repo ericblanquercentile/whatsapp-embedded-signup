@@ -103,7 +103,8 @@
       state: params.get('state') || crypto.randomUUID(),
       mode: params.get('mode') || 'full',
       parentOrigin: params.get('origin') || '*',
-      buttonLabel: params.get('button_label') || 'Continue with Facebook'
+      buttonLabel: params.get('button_label') || 'Continue with Facebook',
+      connectingLabel: params.get('connecting_label') || 'Connecting...'
     };
     document.body.className = CONFIG.mode;
     document.getElementById('loginBtn').textContent = CONFIG.buttonLabel;
@@ -160,7 +161,7 @@
         if (!fbReady) { showStatus('Facebook SDK is loading...', 'info'); return; }
         const btn = document.getElementById('loginBtn');
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span>Connecting...';
+        btn.innerHTML = '<span class="spinner"></span>' + CONFIG.connectingLabel;
         showStatus('Please complete the signup in the Facebook popup', 'info');
         FB.login(function(response) {
           if (response.authResponse && response.authResponse.code) {
