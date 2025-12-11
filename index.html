@@ -102,9 +102,11 @@
       webhookUrl: params.get('webhook_url') || '',
       state: params.get('state') || crypto.randomUUID(),
       mode: params.get('mode') || 'full',
-      parentOrigin: params.get('origin') || '*'
+      parentOrigin: params.get('origin') || '*',
+      buttonLabel: params.get('button_label') || 'Continue with Facebook'
     };
     document.body.className = CONFIG.mode;
+    document.getElementById('loginBtn').textContent = CONFIG.buttonLabel;
     const requiredParams = [
       { key: 'appId', label: 'appId (Facebook App ID)' },
       { key: 'configId', label: 'configId (Embedded Signup Config ID)' },
@@ -187,7 +189,7 @@
             form.submit();
           } else {
             btn.disabled = false;
-            btn.innerHTML = 'Continue with Facebook';
+            btn.innerHTML = CONFIG.buttonLabel;
             showStatus('Login cancelled or failed', 'error');
           }
         }, {
