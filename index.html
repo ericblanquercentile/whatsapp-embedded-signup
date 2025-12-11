@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="1.0.1">
+  <meta name="version" content="1.0.2">
   <title>WhatsApp Business Configuration</title>
   <style>
     .debug-info { position: fixed; top: 0; left: 0; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 2px 5px; z-index: 9999; }
@@ -64,24 +64,20 @@
     }
     .btn:hover:not(:disabled) { background: #128C7E; transform: translateY(-2px); }
     .btn:disabled { background: #ccc !important; cursor: not-allowed; transform: none; }
-    body.embedded .btn.native {
-      all: revert;
-      font-family: Verdana, Arial, sans-serif;
-      font-size: 11px;
-      cursor: pointer;
-      width: 100%;
-    }
+    body.embedded .btn.native,
     body.embedded .btn.native:disabled {
       all: revert;
+      appearance: auto;
+      -webkit-appearance: button;
       font-family: Verdana, Arial, sans-serif;
       font-size: 11px;
-      cursor: not-allowed;
       width: 100%;
     }
     body.embedded .btn.native .spinner {
       width: 8px;
       height: 8px;
-      border-width: 1px;
+      border: 1px solid #666;
+      border-top-color: transparent;
       margin-right: 3px;
     }
     .status { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
