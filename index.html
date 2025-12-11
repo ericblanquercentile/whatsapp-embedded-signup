@@ -59,6 +59,13 @@
     }
     .btn:hover:not(:disabled) { background: #128C7E; transform: translateY(-2px); }
     .btn:disabled { background: #ccc !important; cursor: not-allowed; transform: none; }
+    .btn.native {
+      all: revert;
+      cursor: pointer;
+    }
+    .btn.native:disabled {
+      cursor: not-allowed;
+    }
     .status { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; }
     .status.info { background: #e3f2fd; color: #1565c0; display: block; }
     .status.success { background: #e8f5e9; color: #2e7d32; display: block; }
@@ -111,9 +118,8 @@
     const btn = document.getElementById('loginBtn');
     btn.textContent = CONFIG.buttonLabel;
     
-    // Apply native style if requested
     if (CONFIG.buttonStyle === 'native') {
-      btn.style.cssText = 'cursor:pointer';
+      btn.className = 'btn native';
     }
     
     const requiredParams = [
