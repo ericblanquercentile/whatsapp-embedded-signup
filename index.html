@@ -59,7 +59,7 @@
     }
     .btn:hover:not(:disabled) { background: #128C7E; transform: translateY(-2px); }
     .btn:disabled { background: #ccc !important; cursor: not-allowed; transform: none; }
-    .btn.native {
+    body.embedded .btn.native {
       background: none;
       color: ButtonText;
       border: 2px outset ButtonFace;
@@ -72,12 +72,13 @@
       line-height: normal;
       vertical-align: middle;
       text-align: center;
+      transition: none;
     }
-    .btn.native:hover:not(:disabled) {
+    body.embedded .btn.native:hover:not(:disabled) {
       background: none;
       transform: none;
     }
-    .btn.native:disabled {
+    body.embedded .btn.native:disabled {
       cursor: not-allowed;
       opacity: 0.6;
     }
