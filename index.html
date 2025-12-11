@@ -17,6 +17,10 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #fff;
     }
+    body.embedded {
+      background: transparent;
+      min-height: auto;
+    }
     .container {
       background: rgba(255,255,255,0.95);
       padding: 40px;
@@ -26,8 +30,17 @@
       max-width: 500px;
       color: #333;
     }
+    body.embedded .container {
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
     h1 { margin: 0 0 10px 0; font-size: 24px; color: #25D366; }
     p { color: #666; margin: 0 0 30px 0; }
+    body.embedded h1,
+    body.embedded p,
+    body.embedded .status { display: none; }
     .btn {
       background: #25D366;
       color: white;
@@ -38,6 +51,10 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
+    }
+    body.embedded .btn {
+      padding: 10px 20px;
+      font-size: 14px;
     }
     .btn:hover { background: #128C7E; transform: translateY(-2px); }
     .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
@@ -82,8 +99,11 @@
       sdkVersion: params.get('sdkVersion') || 'v22.0',
       callbackEndpoint: params.get('callback') || '',
       webhookUrl: params.get('webhook_url') || '',
-      state: params.get('state') || crypto.randomUUID()
+      state: params.get('state') || crypto.randomUUID(),
+      mode: params.get('mode') || 'full',
+      parentOrigin: params.get('origin') || '*'
     };
+    document.body.className = CONFIG.mode;
     const requiredParams = [
       { key: 'appId', label: 'appId (Facebook App ID)' },
       { key: 'configId', label: 'configId (Embedded Signup Config ID)' },
@@ -142,9 +162,14 @@
         FB.login(function(response) {
           if (response.authResponse && response.authResponse.code) {
             showStatus('<span class="spinner"></span>Finalizing...', 'info');
+            const callbackUrl = new URL(CONFIG.callbackEndpoint);
+            if (CONFIG.mode === 'embedded') {
+              callbackUrl.searchParams.set('mode', 'embedded');
+              callbackUrl.searchParams.set('origin', CONFIG.parentOrigin);
+            }
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = CONFIG.callbackEndpoint;
+            form.action = callbackUrl.toString();
             const fields = {
               code: response.authResponse.code,
               state: CONFIG.state,
