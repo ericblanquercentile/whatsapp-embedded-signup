@@ -70,7 +70,11 @@
       width: 100%;
     }
     body.embedded .btn.native:disabled {
+      all: revert;
+      font-family: Verdana, Arial, sans-serif;
+      font-size: 11px;
       cursor: not-allowed;
+      width: 100%;
     }
     body.embedded .btn.native .spinner {
       width: 8px;
