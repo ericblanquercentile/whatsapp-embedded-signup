@@ -18,7 +18,12 @@ https://ericblanquercentile.github.io/whatsapp-embedded-signup/?appId=APP_ID&con
 | `configId` | Yes | Embedded Signup configuration ID from Meta |
 | `callback` | Yes | URL to POST the OAuth code after signup |
 | `sdkVersion` | No | Facebook SDK version (default: `v22.0`) |
+| `webhook_url` | No | Webhook URL to pass to the callback |
 | `state` | No | State parameter for CSRF protection |
+
+### Error Handling
+
+If any required parameter (`appId`, `configId`, `callback`) is missing, the page displays an error message listing the missing parameters instead of the signup button.
 
 ## Flow
 
@@ -30,3 +35,4 @@ https://ericblanquercentile.github.io/whatsapp-embedded-signup/?appId=APP_ID&con
    - `state`: State parameter
    - `phone_number_id`: WhatsApp phone number ID
    - `waba_id`: WhatsApp Business Account ID
+   - `webhook_url`: Webhook URL (if provided)
