@@ -205,6 +205,7 @@
         showStatus('Please complete the signup in the Facebook popup', 'info');
         FB.login(function(response) {
           if (response.authResponse && response.authResponse.code) {
+            btn.style.display = 'none';
             showStatus('<span class="spinner"></span>Finalizing...', 'info');
             const callbackUrl = new URL(CONFIG.callbackEndpoint);
             if (CONFIG.mode === 'embedded') {
