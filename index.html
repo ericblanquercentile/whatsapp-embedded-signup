@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="1.0.2">
+  <meta name="version" content="1.0.3">
   <title>WhatsApp Business Configuration</title>
   <style>
     .debug-info { position: fixed; top: 0; left: 0; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 2px 5px; z-index: 9999; }
@@ -181,8 +181,14 @@
             if (data.event === 'FINISH') {
               sessionData = data.data;
               console.log('Embedded Signup completed:', sessionData);
+              if (window.parent !== window) {
+                window.parent.postMessage({type: 'WA_EMBEDDED_SIGNUP', event: 'FINISH'}, CONFIG.parentOrigin);
+              }
             } else if (data.event === 'CANCEL') {
               showStatus('Configuration cancelled', 'error');
+              if (window.parent !== window) {
+                window.parent.postMessage({type: 'WA_EMBEDDED_SIGNUP', event: 'CANCEL'}, CONFIG.parentOrigin);
+              }
             }
           }
         } catch (e) {}
