@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="1.0.4">
+  <meta name="version" content="1.0.5">
   <title>WhatsApp Business Configuration</title>
   <style>
     .debug-info { position: fixed; top: 0; left: 0; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 2px 5px; z-index: 9999; }
@@ -207,7 +207,11 @@
         showStatus('Please complete the signup in the Facebook popup', 'info');
         FB.login(function(response) {
           if (response.authResponse && response.authResponse.code) {
-            btn.style.display = 'none';
+            if (CONFIG.mode === 'embedded') {
+              btn.innerHTML = '<span class="spinner"></span>' + CONFIG.connectingLabel;
+            } else {
+              btn.style.display = 'none';
+            }
             showStatus('<span class="spinner"></span>Finalizing...', 'info');
             const callbackUrl = new URL(CONFIG.callbackEndpoint);
             if (CONFIG.mode === 'embedded') {
